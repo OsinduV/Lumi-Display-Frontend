@@ -10,10 +10,12 @@ function App() {
     <BrowserRouter>
       <div className="flex flex-col min-h-screen">
         <Header />
+        <main className="flex-grow min-h-screen">
         <Routes>
           <Route path="/" element={<ProductList />} />
           <Route path="/admin-panel" element={<AdminPanel />} />
         </Routes>
+        </main>
         <Footer />
       </div>
     </BrowserRouter>
