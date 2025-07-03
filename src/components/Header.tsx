@@ -5,7 +5,7 @@ import React from "react";
 //   NavigationMenuList,
 // } from "@/components/ui/navigation-menu";
 // import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LogOut, Menu, User, X } from "lucide-react";
+import { Menu, User} from "lucide-react";
 // import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
 import {

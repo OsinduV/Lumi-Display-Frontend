@@ -18,7 +18,7 @@ export interface Product {
 
 export default function AdminPanel() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [form, setForm] = useState<Partial<Product> & { image?: File | null }>({
+  const [form, setForm] = useState<Omit<Partial<Product>, "tags"> & { tags: string; image?: File | null }>({
     name: "",
     price: 0,
     description: "",
@@ -51,7 +51,11 @@ export default function AdminPanel() {
     const data = new FormData();
     Object.entries(form).forEach(([key, value]) => {
       if (value !== null && value !== undefined) {
-        data.append(key, value);
+        if (key === "tags") {
+          data.append("tags", value as string);
+        } else {
+          data.append(key, value as any);
+        }
       }
     });
 
