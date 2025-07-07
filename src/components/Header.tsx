@@ -27,7 +27,7 @@ const Header: React.FC = () => {
 
   return (
     <header className="w-full shadow-md bg-[#f9fafb]">
-      <div className=" mx-auto px-6 py-3 flex justify-between items-center max-w-7xl">
+      <div className=" mx-auto px-6 py-3 flex justify-between items-center">
         {/* Logo */}
         <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}>
           <img src={logo} alt="Company Logo" className="h-12 w-auto" />
