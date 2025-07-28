@@ -2,32 +2,28 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-// import ProductList from "./pages/Product";
-// import AdminPanel from "./pages/AdminPanal";
-import ProductForm from "./components/ProductForm";
-import ViewProductsPage from "./pages/ViewProductsPage";
-import BulkCreateProductsPage from "./pages/BulkCreateProductPage";
-import AdminProductManage from "./pages/AdminProductManage";
+import Home from "./pages/Home";
+import AdminPanel from "./pages/AdminPanel";
+import ProductCatalog from "./components/catalog/ProductCatalog";
+import { AuthProvider } from "./contexts/AuthContext";
 
 function App() {
   return (
-    <BrowserRouter>
-      <div className="flex flex-col min-h-screen">
-        <Header />
-        <main className="flex-grow min-h-screen">
-        <Routes>
-          <Route path="/" element={<ViewProductsPage />} />
-          <Route path="/create" element={<ProductForm />} />
-          <Route path="/bulk" element={<BulkCreateProductsPage />} />
-          <Route path="/admin-panel" element={<AdminProductManage />} />
-
-          {/* <Route path="/create" element={<CreateProductPage />} />
-          <Route path="/view" element={<ViewProductsPage />} /> */}
-        </Routes>
-        </main>
-        <Footer />
-      </div>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <div className="flex flex-col min-h-screen">
+          <Header />
+          <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/catalog" element={<ProductCatalog />} />
+            <Route path="/admin-panel" element={<AdminPanel />} />
+          </Routes>
+          </main>
+          <Footer />
+        </div>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
