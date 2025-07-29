@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/table";
 import { productAPI, categoryAPI, brandAPI } from "@/api";
 import { useSearchParams } from "react-router-dom";
+import ProductDetailModal from "./ProductDetailModal";
 
 interface Product {
   _id: string;
@@ -226,6 +227,10 @@ const ProductCatalog: React.FC = () => {
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [searchParams] = useSearchParams();
+  
+  // Product Detail Modal State
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchInitialData();
@@ -333,6 +338,17 @@ const ProductCatalog: React.FC = () => {
 
   const getSelectedBrand = () => {
     return brands.find(brand => brand._id === selectedBrand);
+  };
+
+  // Modal handlers
+  const handleViewProduct = (product: Product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedProduct(null);
   };
 
   const filteredAndSortedProducts = products
@@ -925,6 +941,7 @@ const ProductCatalog: React.FC = () => {
                             <Button
                               variant="ghost"
                               size="sm"
+                              onClick={() => handleViewProduct(product)}
                               className="text-[#0067A0] hover:text-[#0067A0]/80 hover:bg-[#0067A0]/10 text-xs lg:text-sm"
                             >
                               <Eye className="w-3 h-3 lg:w-4 lg:h-4 lg:mr-1" />
@@ -1052,6 +1069,7 @@ const ProductCatalog: React.FC = () => {
                         <Button
                           className="w-full bg-[#FF9E1B] hover:bg-[#FF9E1B]/90 text-sm lg:text-base"
                           size="sm"
+                          onClick={() => handleViewProduct(product)}
                         >
                           <Eye className="w-3 h-3 lg:w-4 lg:h-4 mr-2" />
                           View Details
@@ -1074,6 +1092,14 @@ const ProductCatalog: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Product Detail Modal */}
+      <ProductDetailModal
+        product={selectedProduct}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        brands={brands}
+      />
     </div>
   );
 };

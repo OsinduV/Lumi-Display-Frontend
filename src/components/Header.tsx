@@ -30,14 +30,14 @@ const Header: React.FC = () => {
 
   // Mock tags data (fallback)
   const mockTags: Tag[] = [
-    { _id: 't1', name: 'Energy Efficient' },
-    { _id: 't2', name: 'Smart' },
-    { _id: 't3', name: 'Dimmable' },
-    { _id: 't4', name: 'Commercial' },
-    { _id: 't5', name: 'Waterproof' },
-    { _id: 't6', name: 'RGB' },
-    { _id: 't7', name: 'Industrial' },
-    { _id: 't8', name: 'Outdoor' }
+    { _id: 't1', name: 'Tag 1' },
+    { _id: 't2', name: 'Tag 2' },
+    { _id: 't3', name: 'Tag 3' },
+    { _id: 't4', name: 'Tag 4' },
+    { _id: 't5', name: 'Tag 5' },
+    { _id: 't6', name: 'Tag 6' },
+    { _id: 't7', name: 'Tag 7' },
+    { _id: 't8', name: 'Tag 8' }
   ];
 
   useEffect(() => {

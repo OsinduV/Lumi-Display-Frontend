@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+// import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { brandAPI } from "@/api";
 
@@ -32,7 +32,7 @@ const quickActions = [
     icon: <Grid3X3 className="w-6 h-6" />,
     route: '/catalog',
     color: 'from-[#FF9E1B] to-[#FFB84D]',
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?w=500&h=300&fit=crop'
   },
   {
     title: 'Admin Panel',
@@ -40,7 +40,7 @@ const quickActions = [
     icon: <Shield className="w-6 h-6" />,
     route: '/admin-panel',
     color: 'from-[#0067A0] to-[#4A9EFF]',
-    image: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=500&h=300&fit=crop'
   }
 ];
 
@@ -232,7 +232,7 @@ export default function Home() {
       </section>
 
       {/* Lighting Showcase */}
-      <section className="py-12 lg:py-16 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+      {/* <section className="py-12 lg:py-16 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
@@ -295,7 +295,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Brand Partners */}
       <section className="py-12 lg:py-16 bg-gray-50">
@@ -313,7 +313,7 @@ export default function Home() {
             {brands.length > 0 ? (
               brands.map((brand) => (
                 <div key={brand._id} className="text-center group cursor-pointer">
-                  <div className="w-20 h-20 mx-auto mb-3 bg-white rounded-xl shadow-md flex items-center justify-center group-hover:shadow-lg transition-shadow duration-300 overflow-hidden">
+                  <div className="h-20 mx-auto mb-3 bg-white shadow-md flex items-center justify-center group-hover:shadow-lg transition-shadow duration-300 overflow-hidden">
                     {brand.image ? (
                       <img 
                         src={brand.image} 

@@ -28,7 +28,7 @@ const Footer: React.FC = () => {
             <div className="flex space-x-3">
               <div className="flex items-center text-xs text-gray-300">
                 <Award className="w-4 h-4 mr-1 text-[#FF9E1B]" />
-                Certified LUMIZO Dealer
+                Certified Dealer
               </div>
             </div>
           </div>
@@ -43,12 +43,6 @@ const Footer: React.FC = () => {
                 <a href="/products" className="text-gray-300 hover:text-[#FF9E1B] transition-colors flex items-center">
                   <Zap className="w-3 h-3 mr-2" />
                   All Products
-                </a>
-              </li>
-              <li>
-                <a href="/brands" className="text-gray-300 hover:text-[#0067A0] transition-colors flex items-center">
-                  <Award className="w-3 h-3 mr-2" />
-                  LUMIZO Brand
                 </a>
               </li>
               <li>
