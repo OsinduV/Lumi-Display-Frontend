@@ -56,16 +56,18 @@ const Login: React.FC<LoginProps> = ({ onLogin, isLoading = false, error }) => {
             <div className="flex items-center justify-center mb-2">
               <Lock className="w-6 h-6 text-[#0067A0] mr-2" />
               <CardTitle className="text-xl font-bold text-[#53565A]">
-                Admin Login
+                Login
               </CardTitle>
             </div>
             <p className="text-sm text-[#888B8D]">
-              Enter your credentials to access the admin panel
+              Enter your credentials to access the system
             </p>
           </CardHeader>
           
           <CardContent className="space-y-6">
             <form onSubmit={handleSubmit} className="space-y-4">
+             
+
               {/* Username Field */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-[#53565A]">
@@ -148,7 +150,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, isLoading = false, error }) => {
         {/* Footer */}
         <div className="text-center mt-6">
           <p className="text-xs text-[#888B8D]">
-            LUMIZO Product Portal v1.0 - Admin Access
+            LUMIZO Product Portal v1.0 - Secure Access
           </p>
         </div>
       </div>

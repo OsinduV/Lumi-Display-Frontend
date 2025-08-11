@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import PriceDisplay from "@/components/ui/PriceDisplay";
+import QuickLogin from "@/components/auth/QuickLogin";
+import AddToCartModal from "@/components/cart/AddToCartModal";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   X, 
   ChevronLeft, 
@@ -15,7 +19,8 @@ import {
   Ruler,
   Download,
   ExternalLink,
-  ArrowLeft
+  ArrowLeft,
+  ShoppingCart
 } from "lucide-react";
 
 interface Product {
@@ -46,6 +51,7 @@ interface Product {
   sizes?: string[];
   colors?: string[];
   shapes?: string[];
+  types?: string[];
   redistributionPrice?: number;
 }
 
@@ -66,7 +72,10 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   onClose,
   brands = []
 }) => {
+  const { canViewPrices } = useAuth();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isQuickLoginOpen, setIsQuickLoginOpen] = useState(false);
+  const [isAddToCartModalOpen, setIsAddToCartModalOpen] = useState(false);
 
   // Reset image index when product changes
   useEffect(() => {
@@ -109,9 +118,6 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   };
 
   const hasDiscount = product.isSpecialPriceActive && getOriginalPrice();
-  const discountPercentage = hasDiscount 
-    ? Math.round(((getOriginalPrice()! - getDisplayPrice()) / getOriginalPrice()!) * 100)
-    : 0;
 
   const productImages = product.images?.filter(img => img && img !== '/placeholder-product.jpg') || [];
   const hasImages = productImages.length > 0;
@@ -305,33 +311,52 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 </div>
 
                 {/* Pricing Section */}
-                <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
-                  <div className="flex items-center space-x-4 mb-3">
-                    <span className="text-4xl lg:text-5xl font-bold text-[#53565A]">
-                      Rs. {getDisplayPrice().toLocaleString()}
-                    </span>
-                    {hasDiscount && (
-                      <Badge className="bg-red-500 text-white text-base px-3 py-1">
-                        {discountPercentage}% OFF
-                      </Badge>
+                {canViewPrices ? (
+                  <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
+                    <PriceDisplay 
+                      product={product}
+                      showPrice={canViewPrices}
+                      size="large"
+                      className=""
+                    />
+                    {canViewPrices && hasDiscount && (
+                      <div className="flex items-center space-x-4 text-base mt-3">
+                        <span className="text-green-600 font-semibold">
+                          You save Rs. {(getOriginalPrice()! - getDisplayPrice()).toLocaleString()}
+                        </span>
+                      </div>
                     )}
+                    {canViewPrices && product.redistributionPrice && (
+                      <div className="text-[#888B8D] mt-3">
+                        <span className="font-medium">Redistribution Price:</span> Rs. {product.redistributionPrice.toLocaleString()}
+                      </div>
+                    )}
+                    
+                    {/* Add to Cart Button */}
+                    <div className="mt-4">
+                      <Button
+                        onClick={() => setIsAddToCartModalOpen(true)}
+                        className="w-full bg-[#FF9E1B] hover:bg-[#FF9E1B]/90 text-white font-semibold py-3 text-lg"
+                      >
+                        <ShoppingCart className="w-5 h-5 mr-2" />
+                        Add to Cart
+                      </Button>
+                    </div>
                   </div>
-                  {hasDiscount && (
-                    <div className="flex items-center space-x-4 text-base">
-                      <span className="text-gray-500 line-through">
-                        Rs. {getOriginalPrice()?.toLocaleString()}
-                      </span>
-                      <span className="text-green-600 font-semibold">
-                        You save Rs. {(getOriginalPrice()! - getDisplayPrice()).toLocaleString()}
-                      </span>
+                ) : (
+                  <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
+                    <div className="text-right">
+                      <Button 
+                        onClick={() => setIsQuickLoginOpen(true)}
+                        variant="ghost"
+                        size="sm"
+                        className="text-gray-500 hover:text-gray-700 text-sm"
+                      >
+                        View Prices
+                      </Button>
                     </div>
-                  )}
-                  {product.redistributionPrice && (
-                    <div className="text-[#888B8D] mt-3">
-                      <span className="font-medium">Redistribution Price:</span> Rs. {product.redistributionPrice.toLocaleString()}
-                    </div>
-                  )}
-                </div>
+                  </div>
+                )}
 
                 <Separator className="my-8" />
 
@@ -381,7 +406,8 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 {/* Product Variants */}
                 {((product.sizes && product.sizes.length > 0) || 
                   (product.colors && product.colors.length > 0) || 
-                  (product.shapes && product.shapes.length > 0)) && (
+                  (product.shapes && product.shapes.length > 0) ||
+                  (product.types && product.types.length > 0)) && (
                   <div>
                     <h3 className="text-xl font-semibold text-[#53565A] mb-4 flex items-center">
                       <Palette className="w-6 h-6 mr-3 text-[#008C95]" />
@@ -433,6 +459,21 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                           </div>
                         </div>
                       )}
+                      {product.types && product.types.length > 0 && (
+                        <div className="bg-white rounded-lg p-4 border border-gray-200">
+                          <div className="flex items-center space-x-3 mb-3">
+                            <Package className="w-5 h-5 text-[#888B8D]" />
+                            <span className="font-medium text-[#53565A] text-lg">Available Types:</span>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {product.types.map((type, index) => (
+                              <Badge key={index} variant="outline" className="px-3 py-1 text-base">
+                                {type}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
@@ -469,6 +510,19 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             </div>
           </div>
         </div>
+
+        {/* Quick Login Modal */}
+        <QuickLogin 
+          isOpen={isQuickLoginOpen}
+          onClose={() => setIsQuickLoginOpen(false)}
+        />
+
+        {/* Add to Cart Modal */}
+        <AddToCartModal
+          product={product}
+          isOpen={isAddToCartModalOpen}
+          onClose={() => setIsAddToCartModalOpen(false)}
+        />
       </div>
     </div>
   );

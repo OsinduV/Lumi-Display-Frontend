@@ -160,23 +160,24 @@ const ManageTags: React.FC = () => {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
       {/* Render different views based on currentView state */}
       {currentView === 'list' && (
         <>
           {/* Header */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-[#53565A] flex items-center gap-3">
-                <Tag className="w-8 h-8 text-[#0067A0]" />
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#53565A] flex items-center gap-2 sm:gap-3">
+                <Tag className="w-6 h-6 sm:w-8 sm:h-8 text-[#0067A0]" />
                 Manage Tags
               </h1>
-              <p className="text-[#888B8D] mt-1">Create, edit, and organize your product tags</p>
+              <p className="text-sm sm:text-base text-[#888B8D] mt-1">Create, edit, and organize your product tags</p>
             </div>
             
             <Button 
               onClick={() => setCurrentView('create')}
-              className="bg-[#0067A0] hover:bg-[#0067A0]/90"
+              className="bg-[#0067A0] hover:bg-[#0067A0]/90 w-full sm:w-auto"
+              size="sm"
             >
               <Plus className="w-4 h-4 mr-2" />
               Create Tag
@@ -185,15 +186,17 @@ const ManageTags: React.FC = () => {
 
           {/* Error Banner */}
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-              <div className="flex items-center">
-                <AlertCircle className="h-5 w-5 text-red-400 mr-3" />
-                <p className="text-sm text-red-800">{error}</p>
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 sm:p-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-0">
+                <div className="flex items-center">
+                  <AlertCircle className="h-5 w-5 text-red-400 mr-3 flex-shrink-0" />
+                  <p className="text-sm text-red-800">{error}</p>
+                </div>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={fetchTags}
-                  className="ml-auto text-red-600 hover:text-red-700"
+                  className="ml-auto text-red-600 hover:text-red-700 self-end sm:self-auto"
                 >
                   <RefreshCw className="w-4 h-4 mr-1" />
                   Retry

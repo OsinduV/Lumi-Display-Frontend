@@ -1,12 +1,12 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://lumi-display-backend.onrender.com/api',
+  baseURL: 'http://localhost:5000/api',
 });
 
 // Product API endpoints
 export const productAPI = {
-  // Get all products with optional filters
+  // Get all products with optional filters and pagination
   getAllProducts: (params?: {
     search?: string;
     category?: string;
@@ -15,6 +15,10 @@ export const productAPI = {
     minPrice?: number;
     maxPrice?: number;
     specialOnly?: boolean;
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    sortOrder?: string;
   }) => api.get('/products', { params }),
   
   // Get single product by ID
@@ -36,7 +40,7 @@ export const productAPI = {
 
 // Category API endpoints
 export const categoryAPI = {
-  getAll: () => api.get('/categories'),
+  getAll: (params?: { includeHierarchy?: string }) => api.get('/categories', { params }),
   getById: (id: string) => api.get(`/categories/${id}`),
   create: (data: any) => api.post('/categories', data),
   update: (id: string, data: any) => api.put(`/categories/${id}`, data),

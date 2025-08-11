@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { getAuthConfig } from '@/config/auth.config';
+import { USERS } from '@/config/auth.config';
 
 interface User {
   username: string;
-  role: string;
+  role: 'admin' | 'salesperson';
+  fullName: string;
 }
 
 interface AuthContextType {
@@ -12,6 +13,7 @@ interface AuthContextType {
   login: (credentials: { username: string; password: string }) => Promise<boolean>;
   logout: () => void;
   isLoading: boolean;
+  canViewPrices: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -34,14 +36,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Check for existing session on app load
   useEffect(() => {
-    const savedUser = localStorage.getItem('admin_user');
+    const savedUser = localStorage.getItem('user_session');
     if (savedUser) {
       try {
         const userData = JSON.parse(savedUser);
         setUser(userData);
       } catch (error) {
         console.error('Error parsing saved user data:', error);
-        localStorage.removeItem('admin_user');
+        localStorage.removeItem('user_session');
       }
     }
     setIsLoading(false);
@@ -53,17 +55,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 800));
     
-    // Get credentials from configuration (environment variables)
-    const authConfig = getAuthConfig();
+    // Check against multiple users
+    const user = Object.values(USERS).find(u => 
+      u.username === credentials.username && u.password === credentials.password
+    );
     
-    if (credentials.username === authConfig.username && credentials.password === authConfig.password) {
-      const userData = {
-        username: 'admin',
-        role: 'admin'
+    if (user) {
+      const userData: User = {
+        username: user.username,
+        role: user.role,
+        fullName: user.fullName
       };
       
       setUser(userData);
-      localStorage.setItem('admin_user', JSON.stringify(userData));
+      localStorage.setItem('user_session', JSON.stringify(userData));
       setIsLoading(false);
       return true;
     } else {
@@ -74,15 +79,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('admin_user');
+    localStorage.removeItem('user_session');
   };
+
+  const canViewPrices = !!user && (user.role === 'admin' || user.role === 'salesperson');
 
   const value: AuthContextType = {
     user,
     isAuthenticated: !!user,
     login,
     logout,
-    isLoading
+    isLoading,
+    canViewPrices
   };
 
   return (

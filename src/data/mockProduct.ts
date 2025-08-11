@@ -47,6 +47,7 @@ export const mockProduct = {
   sizes: ["60x60cm", "30x120cm", "60x120cm"],
   colors: ["Cool White (4000K)", "Warm White (3000K)", "Daylight (6500K)"],
   shapes: ["Square", "Rectangular"],
+  types: ["Panel Light", "Ceiling Mount", "Recessed"],
   redistributionPrice: 3200
 };
 

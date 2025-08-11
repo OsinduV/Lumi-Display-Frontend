@@ -520,7 +520,7 @@ const ManageCategories: React.FC = () => {
 
       {/* Add Products to Category Modal */}
       {selectedCategory && (
-        <AddProductsToCategory
+        <AddProductsToCategory 
           isOpen={showAddProductsModal}
           onClose={() => setShowAddProductsModal(false)}
           category={selectedCategory}

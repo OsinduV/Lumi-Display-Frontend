@@ -51,6 +51,7 @@ interface ProductFormData {
   sizes: string[];
   colors: string[];
   shapes: string[];
+  types: string[];
   price: number | '';
   mrp: number | '';
   redistributionPrice: number | '';
@@ -82,6 +83,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     sizes: [],
     colors: [],
     shapes: [],
+    types: [],
     price: '',
     mrp: '',
     redistributionPrice: '',
@@ -94,6 +96,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const [currentSize, setCurrentSize] = useState('');
   const [currentColor, setCurrentColor] = useState('');
   const [currentShape, setCurrentShape] = useState('');
+  const [currentType, setCurrentType] = useState('');
 
   // State for API data
   const [categories, setCategories] = useState<Category[]>([]);
@@ -190,6 +193,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
         sizes: productData.sizes || [],
         colors: productData.colors || [],
         shapes: productData.shapes || [],
+        types: productData.types || [],
         price: productData.price || '',
         mrp: productData.mrp || '',
         redistributionPrice: productData.redistributionPrice || '',
@@ -403,8 +407,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
     }
   };
 
-  // Add array item (generic function for sizes, colors, shapes)
-  const addArrayItem = (field: 'sizes' | 'colors' | 'shapes', value: string) => {
+  // Add array item (generic function for sizes, colors, shapes, types)
+  const addArrayItem = (field: 'sizes' | 'colors' | 'shapes' | 'types', value: string) => {
     if (value.trim()) {
       setFormData(prev => ({
         ...prev,
@@ -414,7 +418,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
   };
 
   // Remove array item
-  const removeArrayItem = (field: 'sizes' | 'colors' | 'shapes', index: number) => {
+  const removeArrayItem = (field: 'sizes' | 'colors' | 'shapes' | 'types', index: number) => {
     setFormData(prev => ({
       ...prev,
       [field]: prev[field].filter((_, i) => i !== index)
@@ -512,6 +516,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
             sizes: [],
             colors: [],
             shapes: [],
+            types: [],
             price: '',
             mrp: '',
             redistributionPrice: '',
@@ -550,29 +555,29 @@ const ProductForm: React.FC<ProductFormProps> = ({
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6 pb-50">
+    <div className="max-w-4xl mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6 pb-12 sm:pb-20">
       {/* Toast Container */}
       <Toaster />
 
       {/* API Error Warning - Keep this one as it's more persistent */}
       {error && (
-        <div className="flex items-center space-x-2 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <AlertCircle className="w-5 h-5 text-yellow-600" />
-          <span className="text-yellow-800">{error}</span>
+        <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 p-3 sm:p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0" />
+          <span className="text-sm sm:text-base text-yellow-800">{error}</span>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
         {/* Basic Information */}
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Package className="w-5 h-5 text-[#FF9E1B]" />
+          <CardHeader className="pb-3 sm:pb-6">
+            <CardTitle className="flex items-center space-x-2 text-lg sm:text-xl">
+              <Package className="w-4 h-4 sm:w-5 sm:h-5 text-[#FF9E1B]" />
               <span>Basic Information</span>
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <CardContent className="space-y-3 sm:space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div>
                 <label className="block text-sm font-medium text-[#53565A] mb-2">
                   Product Name *
@@ -1015,6 +1020,41 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 ))}
               </div>
             </div>
+
+            {/* Types */}
+            <div>
+              <label className="block text-sm font-medium text-[#53565A] mb-2">Types</label>
+              <div className="flex space-x-2 mb-3">
+                <Input
+                  value={currentType}
+                  onChange={(e) => setCurrentType(e.target.value)}
+                  placeholder="Add type (e.g., Downlight, Track Light, Strip Light)"
+                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addArrayItem('types', currentType), setCurrentType(''))}
+                  className="flex-1"
+                />
+                <Button 
+                  type="button" 
+                  onClick={() => { addArrayItem('types', currentType); setCurrentType(''); }}
+                  variant="outline"
+                >
+                  <Plus className="w-4 h-4" />
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {formData.types.map((type, index) => (
+                  <Badge key={index} variant="outline" className="flex items-center space-x-1">
+                    <span>{type}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeArrayItem('types', index)}
+                      className="ml-1 hover:text-red-600"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </Badge>
+                ))}
+              </div>
+            </div>
           </CardContent>
         </Card>
 
@@ -1055,14 +1095,14 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
         {/* Pricing */}
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <DollarSign className="w-5 h-5 text-[#008C95]" />
+          <CardHeader className="pb-3 sm:pb-6">
+            <CardTitle className="flex items-center space-x-2 text-lg sm:text-xl">
+              <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-[#008C95]" />
               <span>Pricing</span>
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <CardContent className="space-y-3 sm:space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div>
                 <label className="block text-sm font-medium text-[#53565A] mb-2">Price (LKR)</label>
                 <Input
@@ -1108,7 +1148,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 />
               </div>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 pt-2">
               <input
                 type="checkbox"
                 id="specialPriceActive"
@@ -1124,7 +1164,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
         </Card>
 
         {/* Submit Button */}
-        <div className="flex justify-end space-x-4 pt-6">
+        <div className="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4 pt-4 sm:pt-6">
           <Button
             type="button"
             variant="outline"
@@ -1143,6 +1183,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   sizes: [],
                   colors: [],
                   shapes: [],
+                  types: [],
                   price: '',
                   mrp: '',
                   redistributionPrice: '',
@@ -1162,13 +1203,14 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 });
               }
             }}
+            className="w-full sm:w-auto"
           >
             Reset Form
           </Button>
           <Button
             type="submit"
             disabled={isSubmitting || !formData.name.trim()}
-            className="bg-[#FF9E1B] hover:bg-[#FF9E1B]/90 disabled:opacity-50"
+            className="bg-[#FF9E1B] hover:bg-[#FF9E1B]/90 disabled:opacity-50 w-full sm:w-auto"
           >
             {isSubmitting ? (
               <>

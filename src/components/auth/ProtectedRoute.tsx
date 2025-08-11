@@ -1,13 +1,19 @@
 import React from 'react';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import Login from '@/components/auth/Login';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
+  requiredRole?: 'admin' | 'salesperson';
+  allowedRoles?: ('admin' | 'salesperson')[];
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated, isLoading } = useAuth();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
+  children, 
+  requiredRole, 
+  allowedRoles 
+}) => {
+  const { user, isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
     return (
@@ -21,7 +27,16 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   }
 
   if (!isAuthenticated) {
-    return <Login onLogin={() => {}} />;
+    return <Navigate to="/login" replace />;
+  }
+
+  // Check role-based access
+  if (requiredRole && user?.role !== requiredRole) {
+    return <Navigate to="/catalog" replace />;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(user?.role as any)) {
+    return <Navigate to="/catalog" replace />;
   }
 
   return <>{children}</>;

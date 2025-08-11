@@ -12,9 +12,31 @@
 // Cons: Still visible in frontend bundle, not truly secure
 // Best for: Development, staging, simple demos
 
+export interface User {
+  username: string;
+  password: string;
+  role: 'admin' | 'salesperson';
+  fullName: string;
+}
+
+export const USERS: Record<string, User> = {
+  admin: {
+    username: import.meta.env.VITE_ADMIN_USERNAME || 'admin',
+    password: import.meta.env.VITE_ADMIN_PASSWORD || 'admin',
+    role: 'admin',
+    fullName: 'Administrator'
+  },
+  salesperson: {
+    username: import.meta.env.VITE_SALES_USERNAME || 'sales',
+    password: import.meta.env.VITE_SALES_PASSWORD || 'sales',
+    role: 'salesperson',
+    fullName: 'Sales Person'
+  }
+};
+
 export const getAuthConfig = () => ({
   username: import.meta.env.VITE_ADMIN_USERNAME || 'admin',
-  password: import.meta.env.VITE_ADMIN_PASSWORD || 'admin123'
+  password: import.meta.env.VITE_ADMIN_PASSWORD || 'admin'
 });
 
 // ========================================
@@ -50,21 +72,6 @@ export const loginWithAPI = async (credentials: LoginCredentials) => {
 };
 */
 
-// ========================================
-// APPROACH 3: Configuration File (Development Only)
-// ========================================
-// Pros: Easy to change without rebuilding
-// Cons: Credentials visible in code repository
-// Best for: Development only, never production
-
-export const DEV_CONFIG = {
-  // Only use this in development!
-  admin: {
-    username: 'admin',
-    password: 'admin123',
-    role: 'admin'
-  }
-};
 
 // ========================================
 // APPROACH 4: Hash-based Authentication

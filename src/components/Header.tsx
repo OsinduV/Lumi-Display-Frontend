@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Menu, User, Search, Lightbulb, Settings } from "lucide-react";
+import { Menu, User, Search, Lightbulb, Settings, Shield, LogIn, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
 import {
@@ -13,6 +13,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { useNavigate, useLocation } from "react-router-dom";
 import { tagAPI } from "@/api";
+import { useAuth } from "@/contexts/AuthContext";
+import QuickLogin from "@/components/auth/QuickLogin";
+import CartButton from "@/components/cart/CartButton";
 
 interface Tag {
   _id: string;
@@ -23,7 +26,9 @@ interface Tag {
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, isAuthenticated, logout } = useAuth();
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  const [isQuickLoginOpen, setIsQuickLoginOpen] = useState(false);
   const [tags, setTags] = useState<Tag[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [mobileSearchTerm, setMobileSearchTerm] = useState('');
@@ -207,6 +212,26 @@ const Header: React.FC = () => {
 
           {/* Action buttons and menu */}
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* Cart Button */}
+            <CartButton />
+
+            {/* User Status Indicator */}
+            {isAuthenticated && user && (
+              <div className="flex items-center space-x-1 px-3 py-1 bg-gray-100 rounded-full">
+                {user.role === 'admin' ? (
+                  <Shield className="w-4 h-4 text-blue-600" />
+                ) : (
+                  <User className="w-4 h-4 text-green-600" />
+                )}
+                <span className="text-sm font-medium">
+                  {user.role === 'admin' ? 'Admin' : 'Sales'}
+                </span>
+                <span className="text-xs text-[#888B8D] ml-1">
+                  ({user.fullName || user.username})
+                </span>
+              </div>
+            )}
+
             {/* Mobile search button */}
             <Button
               variant="ghost"
@@ -232,7 +257,7 @@ const Header: React.FC = () => {
                 <DropdownMenuLabel>
                   <div className="flex items-center">
                     <Lightbulb className="w-4 h-4 mr-2 text-[#FF9E1B]" />
-                    <span className="font-semibold text-[#53565A]">Sales Tools</span>
+                    <span className="font-semibold text-[#53565A]">Quick Menu</span>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
@@ -240,15 +265,31 @@ const Header: React.FC = () => {
                   <Lightbulb className="w-4 h-4 mr-2 text-[#FF9E1B]" />
                   Product Catalog
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/admin-panel")} className="hover:bg-[#FF9E1B]/10">
-                  <User className="w-4 h-4 mr-2 text-[#0067A0]" />
-                  Admin Panel
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/settings")} className="hover:bg-[#008C95]/10">
-                  <Settings className="w-4 h-4 mr-2 text-[#008C95]" />
-                  Settings
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/help")} className="hover:bg-[#888B8D]/10">
+                
+                {/* Authentication-based menu items */}
+                {isAuthenticated && user ? (
+                  <>
+                    {user.role === 'admin' && (
+                      <DropdownMenuItem onClick={() => navigate("/admin-panel")} className="hover:bg-[#FF9E1B]/10">
+                        <Settings className="w-4 h-4 mr-2 text-[#0067A0]" />
+                        Admin Panel
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={logout} className="hover:bg-red-50 text-red-600">
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Logout
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <DropdownMenuItem onClick={() => setIsQuickLoginOpen(true)} className="hover:bg-[#FF9E1B]/10">
+                    <LogIn className="w-4 h-4 mr-2 text-[#0067A0]" />
+                    Login
+                  </DropdownMenuItem>
+                )}
+                
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate("/help")} className="hover:bg-[#008C95]/10">
                   <Lightbulb className="w-4 h-4 mr-2 text-[#888B8D]" />
                   Help & Support
                 </DropdownMenuItem>
@@ -334,6 +375,12 @@ const Header: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Quick Login Modal */}
+      <QuickLogin 
+        isOpen={isQuickLoginOpen}
+        onClose={() => setIsQuickLoginOpen(false)}
+      />
     </header>
   );
 };
