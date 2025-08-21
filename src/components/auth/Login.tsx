@@ -3,7 +3,6 @@ import { Eye, EyeOff, Lightbulb, Lock, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import logo from "@/assets/logo.png";
 
 interface LoginProps {
   onLogin: (credentials: { username: string; password: string }) => void;
@@ -36,7 +35,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, isLoading = false, error }) => {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <img 
-              src={logo} 
+              src="/logo.png" 
               alt="LUMIZO Logo" 
               className="h-16 w-auto" 
             />
