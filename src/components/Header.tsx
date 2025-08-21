@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Menu, User, Search, Lightbulb, Settings, Shield, LogIn, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import logo from "@/assets/logo.png";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -159,7 +158,7 @@ const Header: React.FC = () => {
             {/* LUMIZO Logo */}
             <div className="relative flex-shrink-0">
               <img 
-                src={logo} 
+                src="/logo.png" 
                 alt="LUMIZO Logo" 
                 className="h-8 sm:h-10 md:h-12 w-auto transition-transform group-hover:scale-105" 
               />

@@ -97,9 +97,14 @@ const loadImageAsBase64 = async (url: string): Promise<{ dataURL: string; width:
     
     // Handle local images and external URLs
     if (url.startsWith('/') || url.startsWith('./')) {
+      // For local images, use the current origin
       img.src = window.location.origin + url;
-    } else {
+    } else if (url.startsWith('http')) {
+      // For external URLs, use as-is
       img.src = url;
+    } else {
+      // For relative paths, prepend the origin
+      img.src = window.location.origin + '/' + url;
     }
   });
 };
@@ -117,7 +122,7 @@ export const generateCartPDF = async (options: CartPDFOptions): Promise<void> =>
 
   // Header with LUMIZO Logo
   try {
-    const logoImageData = await loadImageAsBase64('/src/assets/logo.png');
+    const logoImageData = await loadImageAsBase64('/logo.png');
     // Calculate dimensions to maintain aspect ratio
     const maxWidth = 200;
     const maxHeight = 80;
