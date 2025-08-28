@@ -85,9 +85,14 @@ const BulkCreateProducts: React.FC<BulkCreateProductsProps> = ({ onBack, onSucce
     { key: 'types', label: 'Types', type: 'array', required: false },
     { key: 'price', label: 'Price', type: 'number', required: false },
     { key: 'mrp', label: 'MRP', type: 'number', required: false },
-    { key: 'redistributionPrice', label: 'Redistribution Price', type: 'number', required: false },
-    { key: 'specialPrice', label: 'Special Price', type: 'number', required: false },
-    { key: 'isSpecialPriceActive', label: 'Special Price Active', type: 'checkbox', required: false },
+    { key: 'discountedPrice', label: 'Discounted Price', type: 'number', required: false },
+    { key: 'minimumPrice', label: 'Minimum Price', type: 'number', required: false },
+    { key: 'activePriceType', label: 'Active Price Type', type: 'select', required: false, options: [
+      { value: 'price', label: 'Normal Price' },
+      { value: 'mrp', label: 'MRP' },
+      { value: 'discountedPrice', label: 'Discounted Price' },
+      { value: 'minimumPrice', label: 'Minimum Price' }
+    ] },
   ]);
 
   useEffect(() => {

@@ -40,8 +40,9 @@ interface Product {
   };
   price?: number;
   mrp?: number;
-  specialPrice?: number;
-  isSpecialPriceActive: boolean;
+  discountedPrice?: number;
+  minimumPrice?: number;
+  activePriceType: 'price' | 'mrp' | 'discountedPrice' | 'minimumPrice';
   images: string[];
   specSheets?: string[];
   tags: Array<{
@@ -104,20 +105,32 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   if (!isOpen || !product) return null;
 
   const getDisplayPrice = () => {
-    if (product.isSpecialPriceActive && product.specialPrice) {
-      return product.specialPrice;
+    switch (product.activePriceType) {
+      case 'discountedPrice':
+        return product.discountedPrice || product.price || product.mrp || 0;
+      case 'minimumPrice':
+        return product.minimumPrice || product.price || product.mrp || 0;
+      case 'mrp':
+        return product.mrp || product.price || 0;
+      case 'price':
+      default:
+        return product.price || product.mrp || 0;
     }
-    return product.price || product.mrp || 0;
   };
 
   const getOriginalPrice = () => {
-    if (product.isSpecialPriceActive && product.specialPrice && product.price) {
-      return product.price;
+    // If using discounted or minimum price, show the normal price as original
+    if (product.activePriceType === 'discountedPrice' || product.activePriceType === 'minimumPrice') {
+      return product.price || product.mrp;
     }
-    return product.mrp;
+    // If using price, show MRP as original if it exists and is higher
+    if (product.activePriceType === 'price' && product.mrp && product.price && product.mrp > product.price) {
+      return product.mrp;
+    }
+    return null;
   };
 
-  const hasDiscount = product.isSpecialPriceActive && getOriginalPrice();
+  const hasDiscount = getOriginalPrice() !== null;
 
   const productImages = product.images?.filter(img => img && img !== '/placeholder-product.jpg') || [];
   const hasImages = productImages.length > 0;
@@ -326,9 +339,9 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                         </span>
                       </div>
                     )}
-                    {canViewPrices && product.redistributionPrice && (
+                    {canViewPrices && product.minimumPrice && (
                       <div className="text-[#888B8D] mt-3">
-                        <span className="font-medium">Redistribution Price:</span> Rs. {product.redistributionPrice.toLocaleString()}
+                        <span className="font-medium">Minimum Price:</span> Rs. {product.minimumPrice.toLocaleString()}
                       </div>
                     )}
                     

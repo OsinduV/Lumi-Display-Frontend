@@ -54,9 +54,9 @@ interface ProductFormData {
   types: string[];
   price: number | '';
   mrp: number | '';
-  redistributionPrice: number | '';
-  specialPrice: number | '';
-  isSpecialPriceActive: boolean;
+  discountedPrice: number | '';
+  minimumPrice: number | '';
+  activePriceType: 'price' | 'mrp' | 'discountedPrice' | 'minimumPrice';
 }
 
 interface ProductFormProps {
@@ -86,9 +86,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
     types: [],
     price: '',
     mrp: '',
-    redistributionPrice: '',
-    specialPrice: '',
-    isSpecialPriceActive: false
+    discountedPrice: '',
+    minimumPrice: '',
+    activePriceType: 'price'
   });
 
   const [currentFeature, setCurrentFeature] = useState('');
@@ -196,9 +196,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
         types: productData.types || [],
         price: productData.price || '',
         mrp: productData.mrp || '',
-        redistributionPrice: productData.redistributionPrice || '',
-        specialPrice: productData.specialPrice || '',
-        isSpecialPriceActive: productData.isSpecialPriceActive || false
+        discountedPrice: productData.discountedPrice || '',
+        minimumPrice: productData.minimumPrice || '',
+        activePriceType: productData.activePriceType || 'price'
       });
       
       // Set the selected category name for the dropdown
@@ -464,8 +464,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
         // Convert price fields
         price: formData.price === '' ? undefined : Number(formData.price),
         mrp: formData.mrp === '' ? undefined : Number(formData.mrp),
-        redistributionPrice: formData.redistributionPrice === '' ? undefined : Number(formData.redistributionPrice),
-        specialPrice: formData.specialPrice === '' ? undefined : Number(formData.specialPrice)
+        discountedPrice: formData.discountedPrice === '' ? undefined : Number(formData.discountedPrice),
+        minimumPrice: formData.minimumPrice === '' ? undefined : Number(formData.minimumPrice),
+        activePriceType: formData.activePriceType
       };
 
       console.log('Submitting product data:', submitData);
@@ -519,9 +520,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
             types: [],
             price: '',
             mrp: '',
-            redistributionPrice: '',
-            specialPrice: '',
-            isSpecialPriceActive: false
+            discountedPrice: '',
+            minimumPrice: '',
+            activePriceType: 'price'
           });
           setSelectedCategoryName('');
           setCategorySearch('');
@@ -1126,39 +1127,45 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#53565A] mb-2">Redistribution Price (LKR)</label>
+                <label className="block text-sm font-medium text-[#53565A] mb-2">Discounted Price (LKR)</label>
                 <Input
                   type="number"
-                  value={formData.redistributionPrice}
-                  onChange={(e) => handleInputChange('redistributionPrice', e.target.value)}
+                  value={formData.discountedPrice}
+                  onChange={(e) => handleInputChange('discountedPrice', e.target.value)}
                   placeholder="0.00"
                   step="0.01"
                   className="focus:border-[#008C95] focus:ring-[#008C95]/20"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#53565A] mb-2">Special Price (LKR)</label>
+                <label className="block text-sm font-medium text-[#53565A] mb-2">Minimum Price (LKR)</label>
                 <Input
                   type="number"
-                  value={formData.specialPrice}
-                  onChange={(e) => handleInputChange('specialPrice', e.target.value)}
+                  value={formData.minimumPrice}
+                  onChange={(e) => handleInputChange('minimumPrice', e.target.value)}
                   placeholder="0.00"
                   step="0.01"
                   className="focus:border-[#008C95] focus:ring-[#008C95]/20"
                 />
               </div>
             </div>
-            <div className="flex items-center space-x-2 pt-2">
-              <input
-                type="checkbox"
-                id="specialPriceActive"
-                checked={formData.isSpecialPriceActive}
-                onChange={(e) => handleInputChange('isSpecialPriceActive', e.target.checked)}
-                className="rounded border-gray-300 text-[#008C95] focus:ring-[#008C95]"
-              />
-              <label htmlFor="specialPriceActive" className="text-sm text-[#53565A]">
-                Enable Special Price
+            <div className="pt-2">
+              <label className="block text-sm font-medium text-[#53565A] mb-2">
+                Active Price Type
               </label>
+              <select
+                value={formData.activePriceType}
+                onChange={(e) => handleInputChange('activePriceType', e.target.value as 'price' | 'mrp' | 'discountedPrice' | 'minimumPrice')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-[#008C95] focus:ring-2 focus:ring-[#008C95]/20"
+              >
+                <option value="price">Normal Price</option>
+                <option value="mrp">MRP (Minimum Retail Price)</option>
+                <option value="discountedPrice">Discounted Price</option>
+                <option value="minimumPrice">Minimum Price</option>
+              </select>
+              <p className="text-xs text-gray-500 mt-1">
+                Select which price should be displayed as the active price for customers
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -1186,9 +1193,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   types: [],
                   price: '',
                   mrp: '',
-                  redistributionPrice: '',
-                  specialPrice: '',
-                  isSpecialPriceActive: false
+                  discountedPrice: '',
+                  minimumPrice: '',
+                  activePriceType: 'price'
                 });
                 setSelectedCategoryName('');
                 setCategorySearch('');

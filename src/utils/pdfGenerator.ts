@@ -16,8 +16,9 @@ interface Product {
   };
   price?: number;
   mrp?: number;
-  specialPrice?: number;
-  isSpecialPriceActive: boolean;
+  discountedPrice?: number;
+  minimumPrice?: number;
+  activePriceType: 'price' | 'mrp' | 'discountedPrice' | 'minimumPrice';
   images: string[];
   tags: Array<{
     _id: string;
@@ -94,18 +95,30 @@ const loadImageAsBase64 = async (url: string): Promise<{ dataURL: string; width:
 
 // Helper function to get display price
 const getDisplayPrice = (product: Product): number => {
-  if (product.isSpecialPriceActive && product.specialPrice) {
-    return product.specialPrice;
+  switch (product.activePriceType) {
+    case 'discountedPrice':
+      return product.discountedPrice || product.price || product.mrp || 0;
+    case 'minimumPrice':
+      return product.minimumPrice || product.price || product.mrp || 0;
+    case 'mrp':
+      return product.mrp || product.price || 0;
+    case 'price':
+    default:
+      return product.price || product.mrp || 0;
   }
-  return product.price || product.mrp || 0;
 };
 
 // Helper function to get original price
 const getOriginalPrice = (product: Product): number | undefined => {
-  if (product.isSpecialPriceActive && product.specialPrice && product.price) {
-    return product.price;
+  // If using discounted or minimum price, show the normal price as original
+  if (product.activePriceType === 'discountedPrice' || product.activePriceType === 'minimumPrice') {
+    return product.price || product.mrp;
   }
-  return product.mrp;
+  // If using price, show MRP as original if it exists and is higher
+  if (product.activePriceType === 'price' && product.mrp && product.price && product.mrp > product.price) {
+    return product.mrp;
+  }
+  return undefined;
 };
 
 export const generateProductCatalogPDF = async (options: PDFGenerationOptions): Promise<void> => {
@@ -305,7 +318,7 @@ export const generateProductCatalogPDF = async (options: PDFGenerationOptions): 
         const originalPrice = getOriginalPrice(product);
         let priceText = `Rs. ${displayPrice.toLocaleString()}`;
         
-        if (product.isSpecialPriceActive && originalPrice && originalPrice > displayPrice) {
+        if (originalPrice && originalPrice > displayPrice) {
           priceText += `\n(Was: Rs. ${originalPrice.toLocaleString()})`;
         }
         
