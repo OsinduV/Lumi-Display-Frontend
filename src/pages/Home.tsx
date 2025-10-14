@@ -78,21 +78,6 @@ export default function Home() {
 
   useEffect(() => {
     fetchBrands();
-    
-    // Initial keep-alive call
-    setTimeout(() => {
-      keepBackendAlive();
-    }, 2000); // Wait 2 seconds after page load
-    
-    // Auto-refresh to keep backend alive (every 5 minutes)
-    const keepAliveInterval = setInterval(() => {
-      keepBackendAlive();
-    }, 5 * 60 * 1000); // 5 minutes in milliseconds
-
-    // Cleanup interval on component unmount
-    return () => {
-      clearInterval(keepAliveInterval);
-    };
   }, []);
 
   const fetchBrands = async () => {
@@ -101,19 +86,6 @@ export default function Home() {
       setBrands(response.data);
     } catch (error) {
       console.error('Error fetching brands:', error);
-    }
-  };
-
-  // Function to keep backend alive by making a lightweight API call
-  const keepBackendAlive = async () => {
-    try {
-      // Make a simple API call to keep the backend awake
-      // Using brands API as it's lightweight and already used in the component
-      await brandAPI.getAll();
-      console.log('Backend keep-alive ping successful:', new Date().toLocaleTimeString());
-    } catch (error) {
-      console.log('Backend keep-alive ping failed:', error);
-      // Don't show error to user as this is a background operation
     }
   };
 
