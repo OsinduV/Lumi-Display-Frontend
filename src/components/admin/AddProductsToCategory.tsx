@@ -170,8 +170,8 @@ const AddProductsToCategory: React.FC<AddProductsToCategoryProps> = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
+    <Dialog open={isOpen} onOpenChange={onClose} >
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <ShoppingCart className="w-5 h-5 text-[#008C95]" />
@@ -263,10 +263,8 @@ const AddProductsToCategory: React.FC<AddProductsToCategoryProps> = ({
                         />
                       </TableHead>
                       <TableHead>Product</TableHead>
-                      <TableHead>Model Code</TableHead>
                       <TableHead>Current Category</TableHead>
                       <TableHead>Brand</TableHead>
-                      <TableHead>Price</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -304,21 +302,31 @@ const AddProductsToCategory: React.FC<AddProductsToCategoryProps> = ({
                               className="w-4 h-4 text-[#008C95] focus:ring-[#008C95]"
                             />
                           </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-3">
+                          <TableCell className="max-w-[300px] w-[300px]">
+                            <div className="flex items-start gap-3">
                               {product.images && product.images.length > 0 ? (
                                 <img
                                   src={product.images[0]}
                                   alt={product.name}
-                                  className="w-10 h-10 rounded-lg object-cover"
+                                  className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
                                 />
                               ) : (
-                                <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                                <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
                                   <Package className="w-5 h-5 text-gray-400" />
                                 </div>
                               )}
-                              <div>
-                                <p className="font-semibold text-[#53565A]">{product.name}</p>
+                              <div className="flex-1 min-w-0">
+                                <p 
+                                  className="font-semibold text-[#53565A] leading-tight" 
+                                  style={{ 
+                                    wordBreak: 'break-word', 
+                                    overflowWrap: 'break-word',
+                                    whiteSpace: 'normal',
+                                    hyphens: 'auto'
+                                  }}
+                                >
+                                  {product.name}
+                                </p>
                                 {product.description && (
                                   <p className="text-sm text-[#888B8D] truncate max-w-[200px]">
                                     {product.description}
@@ -326,11 +334,6 @@ const AddProductsToCategory: React.FC<AddProductsToCategoryProps> = ({
                                 )}
                               </div>
                             </div>
-                          </TableCell>
-                          <TableCell>
-                            <span className="font-mono text-sm text-[#53565A]">
-                              {product.modelCode || '-'}
-                            </span>
                           </TableCell>
                           <TableCell>
                             <span className="text-sm text-[#888B8D]">
@@ -341,15 +344,6 @@ const AddProductsToCategory: React.FC<AddProductsToCategoryProps> = ({
                             <span className="text-sm text-[#888B8D]">
                               {product.brand?.name || '-'}
                             </span>
-                          </TableCell>
-                          <TableCell>
-                            {product.price ? (
-                              <span className="font-semibold text-[#53565A]">
-                                ₹{product.price.toLocaleString()}
-                              </span>
-                            ) : (
-                              <span className="text-[#888B8D]">-</span>
-                            )}
                           </TableCell>
                         </TableRow>
                       ))
