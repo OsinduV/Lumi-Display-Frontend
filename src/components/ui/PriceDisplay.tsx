@@ -8,9 +8,8 @@ interface Product {
   _id: string;
   price?: number;
   mrp?: number;
-  discountedPrice?: number;
-  minimumPrice?: number;
-  activePriceType: 'price' | 'mrp' | 'discountedPrice' | 'minimumPrice';
+  specialPrice?: number;
+  isSpecialPriceActive: boolean;
 }
 
 interface PriceDisplayProps {
@@ -29,32 +28,20 @@ const PriceDisplay: React.FC<PriceDisplayProps> = ({
   const navigate = useNavigate();
 
   const getDisplayPrice = (product: Product) => {
-    switch (product.activePriceType) {
-      case 'discountedPrice':
-        return product.discountedPrice || product.price || product.mrp || 0;
-      case 'minimumPrice':
-        return product.minimumPrice || product.price || product.mrp || 0;
-      case 'mrp':
-        return product.mrp || product.price || 0;
-      case 'price':
-      default:
-        return product.price || product.mrp || 0;
+    if (product.isSpecialPriceActive && product.specialPrice) {
+      return product.specialPrice;
     }
+    return product.price || product.mrp || 0;
   };
 
   const getOriginalPrice = (product: Product) => {
-    // If using discounted or minimum price, show the normal price as original
-    if (product.activePriceType === 'discountedPrice' || product.activePriceType === 'minimumPrice') {
-      return product.price || product.mrp;
+    if (product.isSpecialPriceActive && product.specialPrice && product.price) {
+      return product.price;
     }
-    // If using price, show MRP as original if it exists and is higher
-    if (product.activePriceType === 'price' && product.mrp && product.price && product.mrp > product.price) {
-      return product.mrp;
-    }
-    return null;
+    return product.mrp;
   };
 
-  const hasDiscount = getOriginalPrice(product) !== null;
+  const hasDiscount = product.isSpecialPriceActive && getOriginalPrice(product);
   const discountPercentage = hasDiscount
     ? Math.round(((getOriginalPrice(product)! - getDisplayPrice(product)) / getOriginalPrice(product)!) * 100)
     : 0;
@@ -109,13 +96,13 @@ const PriceDisplay: React.FC<PriceDisplayProps> = ({
         <span className={`${currentSize.price} font-bold text-[#53565A]`}>
           Rs. {getDisplayPrice(product).toLocaleString()}
         </span>
-        {hasDiscount && (
+        {product.isSpecialPriceActive && (
           <Badge className={`bg-red-100 text-red-800 ${currentSize.badge}`}>
             {discountPercentage}% OFF
           </Badge>
         )}
       </div>
-      {hasDiscount && getOriginalPrice(product) && (
+      {product.isSpecialPriceActive && getOriginalPrice(product) && (
         <div className={`${currentSize.original} text-[#888B8D] line-through`}>
           Rs. {getOriginalPrice(product)?.toLocaleString()}
         </div>

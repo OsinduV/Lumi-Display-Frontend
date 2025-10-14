@@ -26,9 +26,8 @@ export const mockProduct = {
   },
   price: 4500,
   mrp: 5500,
-  discountedPrice: 3800,
-  minimumPrice: 3200,
-  activePriceType: 'discountedPrice' as 'price' | 'mrp' | 'discountedPrice' | 'minimumPrice',
+  specialPrice: 3800,
+  isSpecialPriceActive: true,
   images: [
     "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=600&fit=crop",
     "https://images.unsplash.com/photo-1573167243872-43c6433b9d40?w=600&h=600&fit=crop",
@@ -49,6 +48,7 @@ export const mockProduct = {
   colors: ["Cool White (4000K)", "Warm White (3000K)", "Daylight (6500K)"],
   shapes: ["Square", "Rectangular"],
   types: ["Panel Light", "Ceiling Mount", "Recessed"],
+  redistributionPrice: 3200
 };
 
 export const mockBrands = [

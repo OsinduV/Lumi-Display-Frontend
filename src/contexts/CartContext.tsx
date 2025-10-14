@@ -16,9 +16,8 @@ interface CartItem {
   };
   price?: number;
   mrp?: number;
-  discountedPrice?: number;
-  minimumPrice?: number;
-  activePriceType: 'price' | 'mrp' | 'discountedPrice' | 'minimumPrice';
+  specialPrice?: number;
+  isSpecialPriceActive: boolean;
   redistributionPrice?: number;
   image?: string;
   quantity: number;
@@ -95,17 +94,10 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
   // Get display price for a cart item
   const getDisplayPrice = (item: CartItem): number => {
-    switch (item.activePriceType) {
-      case 'discountedPrice':
-        return item.discountedPrice || item.price || item.mrp || 0;
-      case 'minimumPrice':
-        return item.minimumPrice || item.price || item.mrp || 0;
-      case 'mrp':
-        return item.mrp || item.price || 0;
-      case 'price':
-      default:
-        return item.price || item.mrp || 0;
+    if (item.isSpecialPriceActive && item.specialPrice) {
+      return item.specialPrice;
     }
+    return item.price || item.mrp || 0;
   };
 
   const addToCart = (newItem: Omit<CartItem, 'id' | 'addedAt'>) => {

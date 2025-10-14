@@ -13,9 +13,8 @@ export interface Product {
   };
   price?: number;
   mrp?: number;
-  discountedPrice?: number;
-  minimumPrice?: number;
-  activePriceType: 'price' | 'mrp' | 'discountedPrice' | 'minimumPrice';
+  specialPrice?: number;
+  isSpecialPriceActive: boolean;
   images: string[];
   tags: Array<{
     _id: string;

@@ -17,9 +17,8 @@ interface CartItem {
   };
   price?: number;
   mrp?: number;
-  discountedPrice?: number;
-  minimumPrice?: number;
-  activePriceType: 'price' | 'mrp' | 'discountedPrice' | 'minimumPrice';
+  specialPrice?: number;
+  isSpecialPriceActive: boolean;
   image?: string;
   quantity: number;
   selectedVariants: {
@@ -39,17 +38,10 @@ interface CartPDFOptions {
 
 // Helper function to get display price
 const getDisplayPrice = (item: CartItem): number => {
-  switch (item.activePriceType) {
-    case 'discountedPrice':
-      return item.discountedPrice || item.price || item.mrp || 0;
-    case 'minimumPrice':
-      return item.minimumPrice || item.price || item.mrp || 0;
-    case 'mrp':
-      return item.mrp || item.price || 0;
-    case 'price':
-    default:
-      return item.price || item.mrp || 0;
+  if (item.isSpecialPriceActive && item.specialPrice) {
+    return item.specialPrice;
   }
+  return item.price || item.mrp || 0;
 };
 
 // Helper function to get variant string

@@ -50,17 +50,10 @@ const AddToCartModal: React.FC<AddToCartModalProps> = ({ isOpen, onClose, produc
   }
 
   const getDisplayPrice = () => {
-    switch (product.activePriceType) {
-      case 'discountedPrice':
-        return product.discountedPrice || product.price || product.mrp || 0;
-      case 'minimumPrice':
-        return product.minimumPrice || product.price || product.mrp || 0;
-      case 'mrp':
-        return product.mrp || product.price || 0;
-      case 'price':
-      default:
-        return product.price || product.mrp || 0;
+    if (product.isSpecialPriceActive && product.specialPrice) {
+      return product.specialPrice;
     }
+    return product.price || product.mrp || 0;
   };
 
   const handleVariantChange = (variantType: string, value: string) => {
@@ -92,9 +85,8 @@ const AddToCartModal: React.FC<AddToCartModalProps> = ({ isOpen, onClose, produc
       category: product.category,
       price: product.price,
       mrp: product.mrp,
-      discountedPrice: product.discountedPrice,
-      minimumPrice: product.minimumPrice,
-      activePriceType: product.activePriceType,
+      specialPrice: product.specialPrice,
+      isSpecialPriceActive: product.isSpecialPriceActive,
 
       image: product.images?.[0],
       quantity,
@@ -153,7 +145,7 @@ const AddToCartModal: React.FC<AddToCartModalProps> = ({ isOpen, onClose, produc
                   <span className="text-2xl font-bold text-[#53565A]">
                     Rs. {getDisplayPrice().toLocaleString()}
                   </span>
-                  {(product.activePriceType === 'discountedPrice' || product.activePriceType === 'minimumPrice') && product.price && product.price > getDisplayPrice() && (
+                  {product.isSpecialPriceActive && product.price && product.specialPrice && product.price > product.specialPrice && (
                     <span className="ml-2 text-sm text-gray-500 line-through">
                       Rs. {product.price.toLocaleString()}
                     </span>

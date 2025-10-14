@@ -67,9 +67,9 @@ interface Product {
   }>;
   price?: number;
   mrp?: number;
-  discountedPrice?: number;
-  minimumPrice?: number;
-  activePriceType?: 'price' | 'mrp' | 'discountedPrice' | 'minimumPrice';
+  redistributionPrice?: number;
+  specialPrice?: number;
+  isSpecialPriceActive?: boolean;
   images?: string[];
   sizes?: string[];
   colors?: string[];
@@ -115,14 +115,9 @@ const BulkUpdateProducts: React.FC<BulkUpdateProductsProps> = ({ onBack, onSucce
     { key: 'types', label: 'Types', type: 'array', required: false },
     { key: 'price', label: 'Price', type: 'number', required: false },
     { key: 'mrp', label: 'MRP', type: 'number', required: false },
-    { key: 'discountedPrice', label: 'Discounted Price', type: 'number', required: false },
-    { key: 'minimumPrice', label: 'Minimum Price', type: 'number', required: false },
-    { key: 'activePriceType', label: 'Active Price Type', type: 'select', required: false, options: [
-      { value: 'price', label: 'Normal Price' },
-      { value: 'mrp', label: 'MRP' },
-      { value: 'discountedPrice', label: 'Discounted Price' },
-      { value: 'minimumPrice', label: 'Minimum Price' }
-    ] },
+    { key: 'redistributionPrice', label: 'Redistribution Price', type: 'number', required: false },
+    { key: 'specialPrice', label: 'Special Price', type: 'number', required: false },
+    { key: 'isSpecialPriceActive', label: 'Special Price Active', type: 'checkbox', required: false },
   ]);
 
   useEffect(() => {
