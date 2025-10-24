@@ -71,7 +71,7 @@ const Footer: React.FC = () => {
                 <Mail className="w-4 h-4 mr-3 text-[#0067A0] flex-shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium">Email Support</p>
-                  <p className="text-xs sm:text-sm">sales@lumizo.com</p>
+                  <p className="text-xs sm:text-sm">sales@lumizo.lk</p>
                 </div>
               </div>
               <div className="flex items-start text-gray-300">
